@@ -5,7 +5,7 @@ import { AiOutlineArrowDown } from "react-icons/ai";
 function Hero() {
   return (
     <section
-      style={{ height: "200vh" }}
+      style={{ height: "80vh" }}
       id="home"
       className={classes.container}
     >
@@ -35,7 +35,7 @@ function Hero() {
         </div>
         <div className={classes.right}>
           <img
-            src="https://media.istockphoto.com/id/1332083244/vector/man-eat-the-salad-for-good-health.jpg?s=612x612&w=0&k=20&c=6Msp2hS0S1CVd9m19TZa6FgqWkBZpdczGHmHj_d4jvc="
+            src="https://static.vecteezy.com/system/resources/previews/023/708/591/original/man-eating-noodles-with-chopsticks-at-table-cartoon-illustration-vector.jpg"
             alt=""
             className={classes.manEatingImg}
           />

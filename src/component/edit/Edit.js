@@ -1,60 +1,67 @@
-import React from "react";
-import classes from "./creat.module.css";
+import React, { useEffect } from "react";
+import classes from "./edit.module.css";
 import { AiOutlineCloseCircle } from "react-icons/ai";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+
+import { useNavigate, useParams } from "react-router-dom";
+import { useFormik } from "formik";
 import axios from "axios";
 import { useSelector } from "react-redux";
 
-function Create() {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
-  const [category, setCategory] = useState("");
-  const [image, setImage] = useState("");
-  const [price, setPrice] = useState("");
-  const [review, setReview] = useState("");
+function Edit() {
+  const params = useParams();
 
   const { token } = useSelector((state) => state.auth);
 
   const navigate = useNavigate();
 
-  const handleCreateProduct = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(
-        `https://food-server-ctbx.onrender.com/prod/`,
-        {
-          title,
-          desc,
-          price,
-          desc,
-          category,
-          review,
-          img: image,
+  let formik = useFormik({
+    initialValues: {
+      title: "",
+      desc: "",
+      price: "",
+      category: "",
+      review: "",
+      img: "",
+    },
+    onSubmit: async (val) => {
+      await axios.put(`https://food-server-ctbx.onrender.com/prod/update/${params.id}`, val, {
+        headers: {
+          auth: token,
         },
-        {
-          headers: {
-            auth: token,
-          },
-        }
-      );
-      console.log(res.data);
-      navigate(`/food/${res.data._id}`);
-    } catch (error) {}
+      });
+      navigate("/home");
+    },
+  });
+
+  useEffect(() => {
+    fetch();
+  }, []);
+  const fetch = async () => {
+    const res = await axios.get(
+      `https://food-server-ctbx.onrender.com/prod/find/${params.id}`,
+      {
+        headers: {
+          auth: token,
+        },
+      }
+    );
+    formik.setValues(res.data);
   };
 
   return (
     <div className={classes.container}>
       <div className={classes.wrapper}>
-        <h2 className={classes.title}>Create food</h2>
-        <form onSubmit={handleCreateProduct} encType="multipart/form-data">
+        <h2 className={classes.title}>Edit food</h2>
+        <form onSubmit={formik.handleSubmit} encType="multipart/form-data">
           <div className={classes.inputWrapper}>
             <label>Title: </label>
             <input
               type="text"
               placeholder="Title..."
               className={classes.input}
-              onChange={(e) => setTitle(e.target.value)}
+              name="title"
+              value={formik.values.title}
+              onChange={formik.handleChange}
             />
           </div>
           <div className={classes.inputWrapper}>
@@ -63,7 +70,9 @@ function Create() {
               type="text"
               placeholder="Description..."
               className={classes.input}
-              onChange={(e) => setDesc(e.target.value)}
+              name="desc"
+              value={formik.values.desc}
+              onChange={formik.handleChange}
             />
           </div>
           <div className={classes.inputWrapper}>
@@ -72,7 +81,9 @@ function Create() {
               type="text"
               placeholder="Category..."
               className={classes.input}
-              onChange={(e) => setCategory(e.target.value)}
+              name="category"
+              value={formik.values.category}
+              onChange={formik.handleChange}
             />
           </div>
 
@@ -80,9 +91,11 @@ function Create() {
             <label>Image </label>
             <input
               type="text"
-              placeholder="image address..."
+              placeholder="Category..."
               className={classes.input}
-              onChange={(e) => setImage(e.target.value)}
+              name="img"
+              value={formik.values.img}
+              onChange={formik.handleChange}
             />
           </div>
           <div className={classes.inputWrapper}>
@@ -92,7 +105,9 @@ function Create() {
               step={0.01}
               placeholder="Price..."
               className={classes.input}
-              onChange={(e) => setPrice(e.target.value)}
+              name="price"
+              value={formik.values.price}
+              onChange={formik.handleChange}
             />
           </div>
           <div className={classes.inputWrapper}>
@@ -104,7 +119,9 @@ function Create() {
               max={5}
               placeholder="Review..."
               className={classes.input}
-              onChange={(e) => setReview(e.target.value)}
+              name="review"
+              value={formik.values.review}
+              onChange={formik.handleChange}
             />
           </div>
           <div className={classes.buttonWrapper}>
@@ -118,4 +135,4 @@ function Create() {
   );
 }
 
-export default Create;
+export default Edit;
